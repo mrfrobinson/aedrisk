@@ -10,6 +10,23 @@ This tool allows users to:
 - View estimated cardiac arrest survival rates based on response times
 - Understand the impact of delayed AED access on survival probability
 
+### Available Pages
+
+1. **index.html** - Full interactive application
+   - Requires external CDN access (Leaflet.js)
+   - Requires API access (Nominatim, OSRM)
+   - Full real-time routing and geocoding
+   
+2. **demo.html** - Demonstration with sample data
+   - Works without external dependencies
+   - Shows complete UI and features
+   - Uses static sample data
+   - Best for testing and demonstration
+   
+3. **embed.html** - Iframe embedding example
+   - Shows how to embed the tool
+   - Provides embed code examples
+
 ## Features
 
 ### Interactive Map Interface
@@ -101,6 +118,23 @@ Visual comparison shows:
 
 ## Installation & Setup
 
+### Quick Start
+
+For a quick demonstration without external dependencies:
+```bash
+# Clone repository
+git clone https://github.com/mrfrobinson/aedrisk.git
+cd aedrisk
+
+# Start local server
+python3 -m http.server 8000
+
+# Open demo page in browser
+# http://localhost:8000/demo.html
+```
+
+The **demo.html** page shows the complete UI with sample data and doesn't require external API access.
+
 ### Basic Setup (Static Hosting)
 
 1. **Clone or download** this repository to your web server:
@@ -120,6 +154,13 @@ Visual comparison shows:
    ```
    http://yourdomain.com/aedrisk/
    ```
+   
+   **Note**: The full application (index.html) requires:
+   - Internet access for Leaflet.js CDN
+   - Access to Nominatim API for geocoding
+   - Access to OSRM API for routing
+   
+   If these are not available, use **demo.html** for demonstration purposes.
 
 ### Development Setup
 
