@@ -13,16 +13,45 @@ window.App = {
     async init() {
         console.log('Initializing AED Risk Assessment Tool...');
 
-        // Initialize map
-        MapManager.initMap();
+        // Check if Leaflet is loaded
+        if (typeof L === 'undefined') {
+            console.error('Leaflet.js not loaded. Please check CDN access or use local files.');
+            this.showError('Map library not loaded. Please refresh the page or check your internet connection.');
+            return;
+        }
 
-        // Load facility data
-        await FacilitiesManager.loadFacilities();
+        try {
+            // Initialize map
+            MapManager.initMap();
 
-        // Set up event listeners
-        this.setupEventListeners();
+            // Load facility data
+            await FacilitiesManager.loadFacilities();
 
-        console.log('Application ready');
+            // Set up event listeners
+            this.setupEventListeners();
+
+            console.log('Application ready');
+        } catch (error) {
+            console.error('Initialization error:', error);
+            this.showError('Failed to initialize application. Please refresh the page.');
+        }
+    },
+
+    /**
+     * Show error message
+     */
+    showError(message) {
+        const mapContainer = document.getElementById('map');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8d7da; color: #721c24; padding: 20px; text-align: center;">
+                    <div>
+                        <h3>⚠️ Error</h3>
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `;
+        }
     },
 
     /**
