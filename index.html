@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AED Risk Assessment - Emergency Response Time Calculator</title>
+    
+    <!-- Leaflet CSS - Try multiple CDNs for reliability -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""
+          onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css'"/>
+    
+    <!-- Application CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>AED Risk Assessment Tool</h1>
+            <p class="subtitle">Calculate emergency response times and cardiac arrest survivability</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Search Panel -->
+            <div class="search-panel">
+                <div class="input-group">
+                    <label for="address-input">Enter Address or Click on Map</label>
+                    <input type="text" 
+                           id="address-input" 
+                           placeholder="Search for an address in Ontario..."
+                           autocomplete="off">
+                    <div id="autocomplete-results" class="autocomplete-results"></div>
+                </div>
+                <button id="current-location-btn" class="btn-secondary">
+                    📍 Use My Location
+                </button>
+            </div>
+
+            <!-- Map Container -->
+            <div id="map" class="map-container"></div>
+
+            <!-- Results Panel -->
+            <div id="results-panel" class="results-panel hidden">
+                <h2>Emergency Response Analysis</h2>
+                
+                <div class="location-info">
+                    <strong>Selected Location:</strong>
+                    <span id="selected-address">-</span>
+                </div>
+
+                <!-- Facility Results -->
+                <div class="facility-results">
+                    <div class="facility-card" id="fire-station-result">
+                        <div class="facility-header">
+                            <h3>🚒 Fire Station</h3>
+                            <span class="time-badge" id="fire-time-badge">-</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> <span id="fire-name">-</span></p>
+                            <p><strong>Distance:</strong> <span id="fire-distance">-</span></p>
+                            <p><strong>Travel Time:</strong> <span id="fire-time">-</span></p>
+                            <p><strong>Survival Rate:</strong> <span id="fire-survival" class="survival-rate">-</span></p>
+                        </div>
+                    </div>
+
+                    <div class="facility-card" id="ambulance-result">
+                        <div class="facility-header">
+                            <h3>🚑 Ambulance Station</h3>
+                            <span class="time-badge" id="ambulance-time-badge">-</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> <span id="ambulance-name">-</span></p>
+                            <p><strong>Distance:</strong> <span id="ambulance-distance">-</span></p>
+                            <p><strong>Travel Time:</strong> <span id="ambulance-time">-</span></p>
+                            <p><strong>Survival Rate:</strong> <span id="ambulance-survival" class="survival-rate">-</span></p>
+                        </div>
+                    </div>
+
+                    <div class="facility-card" id="hospital-result">
+                        <div class="facility-header">
+                            <h3>🏥 Hospital</h3>
+                            <span class="time-badge" id="hospital-time-badge">-</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> <span id="hospital-name">-</span></p>
+                            <p><strong>Distance:</strong> <span id="hospital-distance">-</span></p>
+                            <p><strong>Travel Time:</strong> <span id="hospital-time">-</span></p>
+                            <p><strong>Survival Rate:</strong> <span id="hospital-survival" class="survival-rate">-</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survivability Comparison -->
+                <div class="survival-comparison">
+                    <h3>Cardiac Arrest Survival Comparison</h3>
+                    <div class="baseline-info">
+                        <p><strong>Baseline (Immediate AED Access):</strong> <span class="survival-baseline">80%</span></p>
+                    </div>
+                    <div class="survival-chart" id="survival-chart"></div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important Disclaimer:</strong> These are estimates based on map routing and may not reflect actual emergency response times. Response times vary based on traffic, weather, staffing, and other factors. Always call 911 in emergencies.</p>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="loading-indicator hidden">
+                <div class="spinner"></div>
+                <p>Calculating routes and survival rates...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Data sources: OpenStreetMap, OpenRouteService | Based on cardiac arrest survival research</p>
+        </footer>
+    </div>
+
+    <!-- Leaflet JS - Try multiple CDNs for reliability -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""
+            onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'"></script>
+    <script>
+        // Fallback if Leaflet fails to load
+        window.addEventListener('load', function() {
+            if (typeof L === 'undefined') {
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+                script.onload = function() {
+                    if (window.App) window.App.init();
+                };
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+    
+    <!-- Application JS -->
+    <script src="js/facilities.js"></script>
+    <script src="js/geocoding.js"></script>
+    <script src="js/routing.js"></script>
+    <script src="js/survival.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

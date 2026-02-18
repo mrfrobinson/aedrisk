@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AED Risk Assessment Tool - Demo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .demo-map {
+            background: linear-gradient(135deg, #667eea30 0%, #764ba230 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #555;
+            font-weight: 600;
+        }
+        .demo-marker {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .demo-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 80%;
+        }
+        .demo-info h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        .demo-info p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>AED Risk Assessment Tool</h1>
+            <p class="subtitle">Calculate emergency response times and cardiac arrest survivability</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Search Panel -->
+            <div class="search-panel">
+                <div class="input-group">
+                    <label for="address-input-demo">Enter Address or Click on Map</label>
+                    <input type="text" 
+                           id="address-input-demo" 
+                           placeholder="Search for an address in Ontario..."
+                           value="123 Main St, Toronto, ON"
+                           disabled>
+                </div>
+                <button class="btn-secondary" disabled>
+                    📍 Use My Location
+                </button>
+            </div>
+
+            <!-- Demo Map Container -->
+            <div id="map" class="map-container demo-map">
+                <div class="demo-marker">
+                    <div class="demo-info">
+                        <h3>📍 Interactive Map</h3>
+                        <p>In production, this area displays an interactive OpenStreetMap powered by Leaflet.js</p>
+                        <p><small>Map libraries require CDN access or local installation</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel - Demo with Sample Data -->
+            <div id="results-panel" class="results-panel">
+                <h2>Emergency Response Analysis</h2>
+                
+                <div class="location-info">
+                    <strong>Selected Location:</strong>
+                    <span>123 Main St, Toronto, ON M5A 1A1, Canada</span>
+                </div>
+
+                <!-- Facility Results -->
+                <div class="facility-results">
+                    <div class="facility-card">
+                        <div class="facility-header">
+                            <h3>🚒 Fire Station</h3>
+                            <span class="time-badge green">3.5 min</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> Toronto Fire Station 312</p>
+                            <p><strong>Distance:</strong> 2.3 km</p>
+                            <p><strong>Travel Time:</strong> 3.5 min</p>
+                            <p><strong>Survival Rate:</strong> <span class="survival-rate high">65.0%</span></p>
+                        </div>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-header">
+                            <h3>🚑 Ambulance Station</h3>
+                            <span class="time-badge yellow">7.2 min</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> Toronto Paramedic Services Station 41</p>
+                            <p><strong>Distance:</strong> 4.8 km</p>
+                            <p><strong>Travel Time:</strong> 7.2 min</p>
+                            <p><strong>Survival Rate:</strong> <span class="survival-rate medium">52.0%</span></p>
+                        </div>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-header">
+                            <h3>🏥 Hospital</h3>
+                            <span class="time-badge yellow">8.5 min</span>
+                        </div>
+                        <div class="facility-details">
+                            <p><strong>Facility:</strong> Toronto General Hospital</p>
+                            <p><strong>Distance:</strong> 5.2 km</p>
+                            <p><strong>Travel Time:</strong> 8.5 min</p>
+                            <p><strong>Survival Rate:</strong> <span class="survival-rate medium">45.0%</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survivability Comparison -->
+                <div class="survival-comparison">
+                    <h3>Cardiac Arrest Survival Comparison</h3>
+                    <div class="baseline-info">
+                        <p><strong>Baseline (Immediate AED Access):</strong> <span class="survival-baseline">80%</span></p>
+                    </div>
+                    <div class="survival-chart">
+                        <div class="survival-bar baseline">
+                            <div class="survival-bar-label">Baseline (Immediate)</div>
+                            <div class="survival-bar-visual">
+                                <div class="survival-bar-fill" style="width: 100%; background: #28a745;">
+                                    80%
+                                </div>
+                            </div>
+                            <div class="survival-bar-value">80%</div>
+                        </div>
+                        
+                        <div class="survival-bar fire">
+                            <div class="survival-bar-label">🚒 Fire Station</div>
+                            <div class="survival-bar-visual">
+                                <div class="survival-bar-fill" style="width: 81%; background: #ff6b6b;">
+                                    65%
+                                </div>
+                            </div>
+                            <div class="survival-bar-value">
+                                65%
+                                <div class="reduction-text">(-15.0%)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="survival-bar ambulance">
+                            <div class="survival-bar-label">🚑 Ambulance</div>
+                            <div class="survival-bar-visual">
+                                <div class="survival-bar-fill" style="width: 65%; background: #4ecdc4;">
+                                    52%
+                                </div>
+                            </div>
+                            <div class="survival-bar-value">
+                                52%
+                                <div class="reduction-text">(-28.0%)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="survival-bar hospital">
+                            <div class="survival-bar-label">🏥 Hospital</div>
+                            <div class="survival-bar-visual">
+                                <div class="survival-bar-fill" style="width: 56%; background: #45b7d1;">
+                                    45%
+                                </div>
+                            </div>
+                            <div class="survival-bar-value">
+                                45%
+                                <div class="reduction-text">(-35.0%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important Disclaimer:</strong> These are estimates based on map routing and may not reflect actual emergency response times. Response times vary based on traffic, weather, staffing, and other factors. Always call 911 in emergencies.</p>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 6px; border-left: 4px solid #667eea;">
+                    <p><strong>ℹ️ Demo Mode:</strong> This is a demonstration with sample data. The full application with interactive map and real-time routing requires external map libraries (Leaflet.js) and routing APIs (OSRM).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Data sources: OpenStreetMap, OpenRouteService | Based on cardiac arrest survival research</p>
+        </footer>
+    </div>
+</body>
+</html>
